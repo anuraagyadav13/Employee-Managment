@@ -1,18 +1,5 @@
 {
-  "routes": [
-    {
-      "src": "/[^.]+\.(js|css|png|jpg|jpeg|gif|svg|ico|json)",
-      "dest": "/index.html"
-    },
-    {
-      "src": ".*",
-      "dest": "/index.html"
-    }
-  ],
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
