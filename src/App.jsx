@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Login from "./components/Auth/Login";
 import EmployeeDashboard from "./components/Dashboard/EmployeeDashborad";
 import AdminDashboard from "./components/Dashboard/AdminDashboard";
+import TaskForm from "./components/Tasks/TaskForm";
 import { AuthContext } from "./Context/AuthProvider";
 
 const ProtectedRoute = ({ children, requiredRole }) => {
@@ -13,8 +14,8 @@ const ProtectedRoute = ({ children, requiredRole }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (requiredRole && user !== requiredRole) {
-    return <Navigate to={user === "admin" ? "/admin" : "/employee"} replace />;
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to={user?.role === "admin" ? "/admin" : "/employee"} replace />;
   }
 
   return React.cloneElement(children, { onLogout: logout });
@@ -35,7 +36,7 @@ const App = () => {
         path="/login"
         element={
           isAuthenticated ? (
-            <Navigate to={user === "admin" ? "/admin" : "/employee"} replace />
+            <Navigate to={user?.role === "admin" ? "/admin" : "/employee"} replace />
           ) : (
             <Login handleLogin={handleLogin} />
           )
@@ -50,9 +51,25 @@ const App = () => {
         }
       />
       <Route
+        path="/tasks/new"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <TaskForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/tasks/edit/:id"
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <TaskForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/employee"
         element={
-          <ProtectedRoute requiredRole="employee">
+          <ProtectedRoute>
             <EmployeeDashboard />
           </ProtectedRoute>
         }
@@ -61,9 +78,9 @@ const App = () => {
         path="/"
         element={
           isAuthenticated ? (
-            <Navigate to={user === "admin" ? "/admin" : "/employee"} replace />
+            <Navigate to={user?.role === "admin" ? "/admin" : "/employee"} />
           ) : (
-            <Navigate to="/login" replace />
+            <Navigate to="/login" />
           )
         }
       />
